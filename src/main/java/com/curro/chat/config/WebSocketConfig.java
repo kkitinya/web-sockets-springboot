@@ -1,6 +1,7 @@
 package com.curro.chat.config;
 
 import org.springframework.context.annotation.Configuration;
+import org.springframework.messaging.converter.JacksonJsonMessageConverter;
 import org.springframework.messaging.converter.MessageConverter;
 import org.springframework.messaging.converter.StringMessageConverter;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
@@ -22,8 +23,9 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry
-                .addEndpoint("/ws")
-                .withSockJS();
+            .addEndpoint("/ws")
+//            .setAllowedOrigins("*") // Allow all origins for CORS
+            .withSockJS();
     }
 
     /**
@@ -33,7 +35,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
      */
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
-        registry.enableSimpleBroker("/user");
+        registry.enableSimpleBroker("/user","/topic");
         registry.setApplicationDestinationPrefixes("/app");
         registry.setUserDestinationPrefix("/user");
     }
@@ -51,7 +53,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
      */
     @Override
     public boolean configureMessageConverters(List<MessageConverter> messageConverters) {
-        messageConverters.add( new StringMessageConverter());
-        return true;
+        messageConverters.add( new JacksonJsonMessageConverter());
+        return false;
     }
 }
